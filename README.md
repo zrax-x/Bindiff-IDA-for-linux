@@ -11,14 +11,14 @@ A web application for comparing binary executable files using BinDiff.
 ## Prerequisites
 
 - Python 3.7 or higher
+- IDA (must be installed separately)
 - BinDiff (must be installed separately)
 
 ## Installation
 
 1. Clone the repository:
 ```
-git clone https://github.com/yourusername/bindiff-online.git
-cd bindiff-online
+git clone XXX
 ```
 
 2. Set up a virtual environment (optional but recommended):
@@ -58,7 +58,7 @@ python app.py
 
 ## Sample
 
-![results-ui](.\imgs\results-ui.jpg)
+![results-ui](imgs/results-ui.jpg)
 
 ## Notes on the BinDiff Integration
 
