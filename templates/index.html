@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinDiff Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BinDiff Online</h1>
+            <p>Upload two executable files to compare their similarities</p>
+        </header>
+
+        <section class="upload-section">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+                <div class="file-group">
+                    <label for="primary_file">Primary File:</label>
+                    <input type="file" id="primary_file" name="primary_file" accept=".exe,.dll,.so,.bin,.elf,.out" required>
+                    <p class="file-info">Select the primary executable file</p>
+                </div>
+
+                <div class="file-group">
+                    <label for="secondary_file">Secondary File:</label>
+                    <input type="file" id="secondary_file" name="secondary_file" accept=".exe,.dll,.so,.bin,.elf,.out" required>
+                    <p class="file-info">Select the secondary executable file to compare with the primary file</p>
+                </div>
+
+                <button type="submit" class="compare-btn">Compare Files</button>
+            </form>
+        </section>
+
+        <footer>
+            <p>BinDiff Online - Binary Comparison Tool</p>
+        </footer>
+    </div>
+</body>
+</html> 

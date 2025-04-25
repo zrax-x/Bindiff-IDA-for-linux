@@ -1,0 +1,347 @@
+/* General Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f7fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #7f8c8d;
+}
+
+/* Global Stats */
+.global-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.global-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-label {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #3498db;
+    padding: 5px 10px;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-radius: 4px;
+}
+
+/* Upload Section Styles */
+.upload-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.file-group {
+    margin-bottom: 20px;
+}
+
+.file-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.file-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dce1e8;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.file-info {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.compare-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.compare-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Messages */
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 10px 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Results Section Styles */
+.results-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.file-info-display {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+/* Table container to control overflow */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    table-layout: fixed;
+}
+
+.results-table th,
+.results-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.results-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Column width definitions */
+.address-col {
+    width: 17%;
+}
+
+.function-col {
+    width: 23%;
+}
+
+.similarity-col {
+    width: 10%;
+}
+
+.confidence-col {
+    width: 10%;
+    font-weight: bold;
+    text-align: center;
+}
+
+.divider {
+    width: 0;
+    padding: 0 !important;
+    background-color: #333;
+    border-left: 1px solid #333;
+    border-right: 0;
+}
+
+.divider-header {
+    width: 0;
+    padding: 0 !important;
+    background-color: #333;
+}
+
+/* New styles for primary/secondary columns */
+.primary-header {
+    background-color: #3498db !important;
+    color: white !important;
+}
+
+.secondary-header {
+    background-color: #2ecc71 !important;
+    color: white !important;
+}
+
+.similarity-header {
+    background-color: #f39c12 !important;
+    color: white !important;
+}
+
+.primary-col {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.secondary-col {
+    background-color: rgba(46, 204, 113, 0.05);
+}
+
+/* Hover effect */
+.results-table tbody tr:hover td:not(.divider) {
+    background-color: #f5f5f5;
+}
+
+/* Address column */
+.results-table .address-col {
+    font-family: 'Courier New', monospace;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+/* Confidence value gradient colors based on numeric value */
+.results-table .confidence-col {
+    position: relative;
+    font-weight: bold;
+}
+
+/* Create color gradient based on value */
+.results-table .confidence-col::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.1), rgba(46, 204, 113, 0.1));
+    z-index: -1;
+    opacity: 0.4;
+}
+
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+}
+
+.actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+.back-btn {
+    background-color: #95a5a6;
+}
+
+.back-btn:hover {
+    background-color: #7f8c8d;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .upload-section,
+    .results-section {
+        padding: 15px;
+    }
+    
+    .results-table th,
+    .results-table td {
+        padding: 8px 6px;
+        font-size: 0.9rem;
+    }
+
+    /* Make the table scrollable on small screens */
+    .results-section {
+        padding: 15px 0;
+    }
+    
+    .table-container {
+        margin: 0;
+        padding: 0 15px;
+    }
+
+    .results-table {
+        min-width: 800px; /* Ensure table doesn't get too compressed */
+    }
+    
+    /* Responsive global stats */
+    .global-stats {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+} 

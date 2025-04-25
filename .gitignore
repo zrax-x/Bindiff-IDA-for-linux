@@ -1,0 +1,35 @@
+# 环境变量配置文件
+.env
+.env.*
+!.env.example
+
+# 用户上传的文件
+/uploads/
+/uploads/*
+
+# BinDiff输出文件
+/out/
+/out/*
+
+# Python虚拟环境
+bindiff-pyenv/
+venv/
+env/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Flask相关
+instance/
+.webassets-cache
+
+# 编辑器临时文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store 

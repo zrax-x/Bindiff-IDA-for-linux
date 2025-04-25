@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinDiff Comparison Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BinDiff Comparison Results</h1>
+            <div class="file-info-display">
+                <p><strong>Primary File:</strong> {{ primary_filename }}</p>
+                <p><strong>Secondary File:</strong> {{ secondary_filename }}</p>
+            </div>
+            
+            {% if results.globalSimilarity is defined %}
+            <div class="global-stats">
+                <div class="global-stat-item">
+                    <span class="stat-label">Global Similarity:</span>
+                    <span class="stat-value">{{ (results.globalSimilarity * 100) | round(2) }}%</span>
+                </div>
+                <div class="global-stat-item">
+                    <span class="stat-label">Global Confidence:</span>
+                    <span class="stat-value">{{ results.globalConfidence | round(2) }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </header>
+
+        <section class="results-section">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if results %}
+                <div class="table-container">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="primary-header">Primary File</th>
+                                <th class="divider-header"></th>
+                                <th colspan="2" class="secondary-header">Secondary File</th>
+                                <th class="divider-header"></th>
+                                <th colspan="2" class="similarity-header">Match Details</th>
+                            </tr>
+                            <tr>
+                                <th class="primary-col address-col">Address</th>
+                                <th class="primary-col function-col">Function Name</th>
+                                <th class="divider"></th>
+                                <th class="secondary-col address-col">Address</th>
+                                <th class="secondary-col function-col">Function Name</th>
+                                <th class="divider"></th>
+                                <th class="similarity-col">Similarity</th>
+                                <th class="confidence-col">Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for match in results.matches %}
+                                <tr>
+                                    <td class="primary-col address-col">0x{{ '%x'|format(match[0]|int) }}</td>
+                                    <td class="primary-col function-col">{{ match[2] }}</td>
+                                    <td class="divider"></td>
+                                    <td class="secondary-col address-col">0x{{ '%x'|format(match[1]|int) }}</td>
+                                    <td class="secondary-col function-col">{{ match[3] }}</td>
+                                    <td class="divider"></td>
+                                    <td class="similarity-col">{{ (match[4] * 100) | round(2) }}%</td>
+                                    <td class="confidence-col">{{ match[5] | round(2) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <p>No matching functions found or error occurred during comparison.</p>
+                </div>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{{ url_for('index') }}" class="btn back-btn">Upload New Files</a>
+            </div>
+        </section>
+
+        <footer>
+            <p>BinDiff Online - Binary Comparison Tool</p>
+        </footer>
+    </div>
+</body>
+</html> 
