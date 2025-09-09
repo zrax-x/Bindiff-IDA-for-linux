@@ -33,7 +33,7 @@ instance/
 *.swo
 *~
 .DS_Store 
-
+*.log
 
 family/
 test/

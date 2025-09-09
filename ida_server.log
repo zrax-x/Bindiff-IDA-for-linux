@@ -2677,4 +2677,188 @@ IDA分析服务器启动在端口 7002
 接收到来自 ('127.0.0.1', 59906) 的连接
 收到数据: {"action": "decompile_function", "binary_path": "uploads/FIN7-af539c285295b307daa5360f260ca0fd2afb84a0c7d6739838e2ab1199553cd7.out", "address": "180001008"}
 接收到来自 ('127.0.0.1', 45512) 的连接
-收到数据: {"action": "decompile_function", "binary_path": "uploads/FIN7-bc422ea28263b0cf0cdddf85bd91d2d6c3889f3266734fd46d48ccb0ec2ba831.out", "address": "180001008"}
+收到数据: {"action": "decompile_function", "binary_path": "uploads/FIN7-bc422ea28263b0cf0cdddf85bd91d2d6c3889f3266734fd46d48ccb0ec2ba831.out", "address": "180001008"}IDAPython: Requested to use virtual environment interpreter at /home/zraxx/APT/malwareDiff/bindiff-online/bindiff-pyenv/bin/python3
+BinDiff 8 (@internal, Apr 24 2025), (c)2004-2011 zynamics GmbH, (c)2011-2024 Google LLC.
+BinExport 12 (@bdb8c44, Apr 24 2025), (c)2004-2011 zynamics GmbH, (c)2011-2024 Google LLC.
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+Possible file format: MS-DOS executable (EXE) (/home/zraxx/idapro-9.0/loaders/dos64.so)
+Possible file format: Portable executable for AMD64 (PE) (/home/zraxx/idapro-9.0/loaders/pe64.so)
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+   696320    85 8192 allocating memory for b-tree...
+   696320    85 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+  1654784            total memory allocated
+
+Loading file '/home/zraxx/APT/malwareDiff/Bindiff-IDA-for-linux/uploads/b39c2857aef8baeca0afcd184115b3a495e130687d0828dd6cf9fe6a78465792' into database...
+Detected file format: Portable executable for AMD64 (PE)
+Loading processor module /home/zraxx/idapro-9.0/procs/pc64.so for metapc...Initializing processor module metapc...OK
+Autoanalysis subsystem has been initialized.
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+  0. Creating a new segment  (0000000140001000-000000014001F000) ... ... OK
+  1. Creating a new segment  (000000014001F000-0000000140028000) ... ... OK
+  2. Creating a new segment  (0000000140028000-0000000140029000) ... ... OK
+  3. Creating a new segment  (0000000140029000-000000014002A000) ... ... OK
+Reading imports directory...
+Reading exception directory (.pdata)...
+Applying fixups...
+  4. Creating a new segment  (000000014001F2F0-0000000140028000) ... ... OK
+PDB: using PDBIDA provider
+PDB: downloading http://msdl.microsoft.com/download/symbols/NTCreateprocess.pdb/B0C1F0863A4343948830DCF8468A61D61/NTCreateprocess.pdb => /tmp/ida/NTCreateprocess.pdb/B0C1F0863A4343948830DCF8468A61D61/NTCreateprocess.pdb
+PDB: HTTP error: Server replied with status code 404
+Could not find PDB file 'NTCreateprocess.pdb'.
+Please check _NT_SYMBOL_PATH
+/home/zraxx/..../b39c2857aef8baeca0afcd184115b3a495e130687d0828dd6cf9fe6a78465792: failed to load pdb info.
+
+Do you want to browse for the pdb file on disk? -> ~Y~es
+Syntax error near: <END>
+Plan  FLIRT signature: Microsoft VisualC v14 64bit runtime
+Plan  FLIRT signature: Microsoft VisualC 64bit universal runtime
+main() function at 1400060C0, named "main"
+Type library 'mssdk64_win7' loaded. Applying types...
+Types applied to 80 names.
+Plan  FLIRT signature: SEH for vc64 7-14
+Type library 'ntapi64_win7' loaded. Applying types...
+Types applied to 2 names.
+Marking typical code sequences...
+Flushing buffers, please wait...ok
+File '/home/zraxx/APT/malwareDiff/Bindiff-IDA-for-linux/uploads/b39c2857aef8baeca0afcd184115b3a495e130687d0828dd6cf9fe6a78465792' has been successfully loaded into the database.
+Hex-Rays Decompiler plugin has been loaded (v9.0.0.240807)
+  License: 00-0000-0000-00  (0 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.0.0.240807 has been detected, gooMBA plugin ready to use
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+RUST: the input file probably contains Rust code
+RUST: plugin has been enabled
+IDA is analysing the input file...
+You may start to explore the input file right now.
+启动参数: 端口=7001
+等待IDA完成初始分析...
+Using FLIRT signature: Microsoft VisualC v14 64bit runtime
+Using FLIRT signature: Microsoft VisualC 64bit universal runtime
+Using FLIRT signature: SEH for vc64 7-14
+Propagating type information...
+Function argument information has been propagated
+lumina: getaddrinfo: Temporary failure in name resolution
+The initial autoanalysis has been finished.
+IDA分析服务器启动在端口 7001
+接收到来自 ('127.0.0.1', 42854) 的连接
+警告: 从 ('127.0.0.1', 42854) 接收到空数据
+接收到来自 ('127.0.0.1', 42858) 的连接
+收到数据: {"action": "hello"}
+接收到来自 ('127.0.0.1', 42874) 的连接
+收到数据: {"action": "decompile_function", "binary_path": "uploads/b39c2857aef8baeca0afcd184115b3a495e130687d0828dd6cf9fe6a78465792", "address": "14000e190"}
+The decompiler assumes that the segment '.rdata' is read-only because of its NAME.
+All data references to the segment will be replaced by constant values.
+This may lead to drastic changes in the decompiler output.
+If the segment is not read-only, please change the segment NAME.
+
+In general, the decompiler checks the segment permissions, class, and name
+to determine if it is read-only.
+ -> OKIDAPython: Requested to use virtual environment interpreter at /home/zraxx/APT/malwareDiff/bindiff-online/bindiff-pyenv/bin/python3
+BinDiff 8 (@internal, Apr 24 2025), (c)2004-2011 zynamics GmbH, (c)2011-2024 Google LLC.
+BinExport 12 (@bdb8c44, Apr 24 2025), (c)2004-2011 zynamics GmbH, (c)2011-2024 Google LLC.
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+Possible file format: MS-DOS executable (EXE) (/home/zraxx/idapro-9.0/loaders/dos64.so)
+Possible file format: Portable executable for 80386 (PE) (/home/zraxx/idapro-9.0/loaders/pe64.so)
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+   819200   100 8192 allocating memory for b-tree...
+   819200   100 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+  1900544            total memory allocated
+
+Loading file '/home/zraxx/APT/malwareDiff/Bindiff-IDA-for-linux/uploads/e7472e7c75533cb6f548742d9e945b36a11e985788304b8f10572d1d08f28185' into database...
+Detected file format: Portable executable for 80386 (PE)
+Loading processor module /home/zraxx/idapro-9.0/procs/pc64.so for metapc...Initializing processor module metapc...OK
+Autoanalysis subsystem has been initialized.
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+Assuming __cdecl calling convention by default
+  0. Creating a new segment  (00401000-00425000) ... ... OK
+  1. Creating a new segment  (00425000-00431000) ... ... OK
+  2. Creating a new segment  (00431000-00433000) ... ... OK
+Reading imports directory...
+Applying fixups...
+  3. Creating a new segment  (004251AC-00431000) ... ... OK
+Plan  FLIRT signature: Microsoft VisualC 14/net runtime
+Plan  FLIRT signature: Microsoft VisualC universal runtime
+main() function at 406D20, named "_main"
+Type library 'mssdk_win7' loaded. Applying types...
+Types applied to 91 names.
+Plan  FLIRT signature: SEH for vc7-14
+Marking typical code sequences...
+Flushing buffers, please wait...ok
+File '/home/zraxx/APT/malwareDiff/Bindiff-IDA-for-linux/uploads/e7472e7c75533cb6f548742d9e945b36a11e985788304b8f10572d1d08f28185' has been successfully loaded into the database.
+Hex-Rays Decompiler plugin has been loaded (v9.0.0.240807)
+  License: 00-0000-0000-00  (0 user)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.0.0.240807 has been detected, gooMBA plugin ready to use
+/home/zraxx/.idapro/plugins/mcp-plugin.py: Python 3.11 or higher is required for the MCP plugin
+Traceback (most recent call last):
+  File "/home/zraxx/idapro-9.0/python/3/ida_idaapi.py", line 573, in IDAPython_ExecScript
+    exec(code, g)
+  File "/home/zraxx/.idapro/plugins/mcp-plugin.py", line 5, in <module>
+    raise RuntimeError("Python 3.11 or higher is required for the MCP plugin")
+RuntimeError: Python 3.11 or higher is required for the MCP plugin
+
+IDA is analysing the input file...
+You may start to explore the input file right now.
+启动参数: 端口=7002
+等待IDA完成初始分析...
+Using FLIRT signature: Microsoft VisualC 14/net runtime
+Using FLIRT signature: Microsoft VisualC universal runtime
+Using FLIRT signature: SEH for vc7-14
+Propagating type information...
+Function argument information has been propagated
+lumina: getaddrinfo: Temporary failure in name resolution
+The initial autoanalysis has been finished.
+IDA分析服务器启动在端口 7002
+接收到来自 ('127.0.0.1', 51324) 的连接
+警告: 从 ('127.0.0.1', 51324) 接收到空数据
+接收到来自 ('127.0.0.1', 51334) 的连接
+收到数据: {"action": "hello"}
+接收到来自 ('127.0.0.1', 51338) 的连接
+收到数据: {"action": "decompile_function", "binary_path": "uploads/e7472e7c75533cb6f548742d9e945b36a11e985788304b8f10572d1d08f28185", "address": "40ec10"}
