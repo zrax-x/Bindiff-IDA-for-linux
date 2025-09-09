@@ -33,3 +33,8 @@ instance/
 *.swo
 *~
 .DS_Store 
+
+
+family/
+test/
+temp_uploads/

@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BinDiff Comparison Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script>
+        // 初始化highlight.js
+        hljs.configure({
+            languages: ['cpp'],
+            tabReplace: '    ', // 4个空格缩进
+        });
+        hljs.highlightAll();
+    </script>
 </head>
 <body>
     <div class="container">
@@ -89,9 +100,28 @@
             </div>
         </section>
 
-        <footer>
-            <p>BinDiff Online - Binary Comparison Tool</p>
-        </footer>
+        <!-- 函数对比视图 -->
+        <div id="decompile-view">
+            <div class="decompile-container">
+                <div class="decompile-header">
+                    <h2>Function Comparison View</h2>
+                    <button class="close-button" onclick="closeDecompileView()">&times;</button>
+                </div>
+                <div class="decompile-content">
+                    <div class="decompile-panel">
+                        <h3>Primary Function</h3>
+                        <pre><code id="primary-decompile" class="language-cpp"></code></pre>
+                    </div>
+                    <div class="decompile-panel">
+                        <h3>Secondary Function</h3>
+                        <pre><code id="secondary-decompile" class="language-cpp"></code></pre>
+                    </div>
+                </div>
+            </div>
+            <div id="loading-indicator">Loading...</div>
+        </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/results.js') }}"></script>
 </body>
 </html> 
