@@ -15,6 +15,7 @@ import hashlib
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+from binexport import ProgramBinExport
 
 # 尝试加载.env文件中的环境变量
 # 首先尝试加载.env文件
@@ -66,6 +67,62 @@ def calculate_file_sha1(file_path):
             sha1.update(chunk)
     return sha1.hexdigest()
 
+def convert_pe_to_binexport(pe_file_path, output_dir="temp_binexports"):
+    """
+    将PE文件转换为BinExport格式
+    
+    Args:
+        pe_file_path: PE文件路径
+        output_dir: 输出目录
+        
+    Returns:
+        str: 生成的BinExport文件路径，如果失败返回None
+    """
+    try:
+        import shutil
+
+        # 确保输出目录存在
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # 生成输出文件名
+        pe_filename = os.path.basename(pe_file_path)
+        # 如果文件名已经以.BinExport结尾，则不再添加后缀
+        if pe_filename.endswith('.BinExport'):
+            binexport_filename = pe_filename
+        else:
+            binexport_filename = pe_filename + ".BinExport"
+        binexport_path = os.path.join(output_dir, binexport_filename)
+        
+        # 检查是否已存在 BinExport 文件
+        if os.path.exists(binexport_path):
+            print(f"跳过 {pe_file_path}，已存在 {binexport_path}")
+            return binexport_path
+        
+        print(f"正在为 {pe_file_path} 生成 BinExport...")
+        
+        # 生成 BinExport
+        program = ProgramBinExport.from_binary_file(pe_file_path)
+        
+        if program:
+            # BinExport 文件通常生成在输入文件目录，需移动到 output_dir
+            default_binexport = f"{pe_file_path}.BinExport"
+            if os.path.exists(default_binexport):
+                shutil.move(default_binexport, binexport_path)
+                print(f"成功生成并移动: {binexport_path}")
+                return binexport_path
+            else:
+                print(f"未找到生成的 BinExport 文件: {default_binexport}")
+                return None
+        else:
+            print(f"生成失败: {pe_file_path}")
+            return None
+        
+    except Exception as e:
+        print(f"处理 {pe_file_path} 时出错: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return None
+
 
 def run_bindiff_cli(primary_file, secondary_file):
     """
@@ -115,6 +172,85 @@ def run_bindiff_cli(primary_file, secondary_file):
         
     except Exception as e:
         print(f"Error in BinDiff processing: {e}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "globalSimilarity": 0,
+            "globalConfidence": 0,
+            "matches": []
+        }
+
+
+def compare_binexport_files(binexport1_path, binexport2_path):
+    """
+    高效比较两个BinExport文件
+    
+    Args:
+        binexport1_path: 第一个BinExport文件路径
+        binexport2_path: 第二个BinExport文件路径
+        
+    Returns:
+        dict: 比较结果，包含相似度、置信度和匹配信息
+    """
+    try:
+        # 计算文件哈希
+        hash1 = calculate_file_sha1(binexport1_path)
+        hash2 = calculate_file_sha1(binexport2_path)
+        
+        # 创建组合哈希值
+        combined_sha1 = hashlib.sha1((hash1 + hash2).encode()).hexdigest()
+        
+        # 定义输出文件名
+        output_file_name = f"{combined_sha1}.BinDiff"
+        output_file_path = os.path.join("out", output_file_name)
+        
+        # 确保out目录存在
+        os.makedirs("out", exist_ok=True)
+        
+        print(f"Comparing BinExport files...")
+        print(f"File 1: {binexport1_path}")
+        print(f"File 2: {binexport2_path}")
+        print(f"Output: {output_file_path}")
+        
+        # 使用BinDiff比较两个BinExport文件
+        diff = BinDiff.from_binexport_files(binexport1_path, binexport2_path, output_file_path)
+        
+        if diff is None:
+            print("Warning: BinDiff returned None, this might indicate comparison failure")
+            return {
+                "globalSimilarity": 0,
+                "globalConfidence": 0,
+                "matches": []
+            }
+        
+        print(f"Global similarity: {diff.similarity}, Global confidence: {diff.confidence}")
+        
+        # 提取函数匹配信息
+        matches = []
+        print("Extracting function matches...")
+        for match in diff.iter_function_matches():
+            _, _, funcMatch = match
+            matches.append((
+                funcMatch.address1, 
+                funcMatch.address2, 
+                funcMatch.name1, 
+                funcMatch.name2, 
+                funcMatch.similarity, 
+                funcMatch.confidence
+            ))
+        
+        print(f"Found {len(matches)} function matches.")
+        
+        result = {
+            "globalSimilarity": diff.similarity,
+            "globalConfidence": diff.confidence,
+            "matches": matches
+        }
+
+        return result
+        
+    except Exception as e:
+        print(f"Error in BinExport comparison: {e}")
         import traceback
         traceback.print_exc()
         return {

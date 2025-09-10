@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 from bindiff_integration import run_bindiff_cli
 from APTDiff import init_app
 from start_ida_server import IDAServerManager
+from similarity_search import init_similarity_search
 import atexit
 import threading
 import socket
@@ -27,6 +28,9 @@ app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
 
 # 初始化APT检测模块
 init_app(app)
+
+# 初始化相似度搜索模块
+init_similarity_search(app, config.DATABASE_FILE)
 
 # 全局变量
 ida_manager = None

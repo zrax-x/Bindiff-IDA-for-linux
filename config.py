@@ -12,12 +12,15 @@ IDA_SERVER_PORT_RANGE = (IDA_SERVER_START_PORT, IDA_SERVER_START_PORT + 99)  # I
 # 目录配置
 UPLOAD_FOLDER = 'uploads'  # 上传文件目录
 OUTPUT_FOLDER = 'out'  # 输出文件目录
-ALLOWED_EXTENSIONS = {'exe', 'dll', 'so', 'bin', 'elf', 'out'}  # 允许的文件类型
+ALLOWED_EXTENSIONS = {'exe', 'dll', 'bin', 'elf', 'out'}  # 允许的文件类型
+
+# 数据库配置
+DATABASE_FILE = os.environ.get('MALWARE_DATABASE', '../gen_database/malware_simple.json')  # 恶意软件数据库文件路径
 
 # IDA Pro路径配置
 DEFAULT_IDA_PATHS = [
     # Linux路径
-    "/home/zraxx/idapro-9.0/idat64",
+    "/home/zraxx/ida-pro-9.1/idat",
     # Windows路径
     "C:\\Program Files\\IDA Pro 7.5\\idat64.exe",
 ]

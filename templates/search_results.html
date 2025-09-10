@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果 - BinDiff Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .similarity-score {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .high-similarity { color: #dc3545; }
+        .medium-similarity { color: #fd7e14; }
+        .low-similarity { color: #6c757d; }
+        
+        .family-badge {
+            font-size: 0.9em;
+            padding: 0.5em 0.8em;
+        }
+        
+        .result-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .progress {
+            height: 8px;
+        }
+        
+        .hash-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-shield-alt me-2"></i>BinDiff Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">文件比较</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('similarity.search_page') }}">相似度搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2>
+                            <i class="fas fa-search-plus text-primary me-2"></i>搜索结果
+                        </h2>
+                        <p class="text-muted mb-0">
+                            文件: <strong>{{ search_filename }}</strong> | 
+                            搜索耗时: <strong>{{ search_duration }}秒</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('similarity.search_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>新搜索
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                        <h4 class="mb-1">{{ results|length }}</h4>
+                        <small>相似样本</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-database fa-2x mb-2"></i>
+                        <h4 class="mb-1">{{ total_samples }}</h4>
+                        <small>总样本数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-layer-group fa-2x mb-2"></i>
+                        <h4 class="mb-1">{{ total_families }}</h4>
+                        <small>总家族数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-trophy fa-2x mb-2"></i>
+                        <h4 class="mb-1">TOP-{{ top_k }}</h4>
+                        <small>最相似结果</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if results %}
+            <!-- Results Grid View -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-list me-2"></i>相似度结果</h4>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary active" id="gridViewBtn">
+                            <i class="fas fa-th me-1"></i>网格视图
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="tableViewBtn">
+                            <i class="fas fa-table me-1"></i>表格视图
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid View -->
+                <div id="gridView" class="row g-3">
+                    {% for result in results %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card result-card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                <span class="badge family-badge 
+                                    {% if result.family == 'Patchwork' %}bg-danger
+                                    {% elif result.family == 'APT1' %}bg-warning
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ result.family }}
+                                </span>
+                                <small class="text-muted">#{{ loop.index }}</small>
+                            </div>
+                            <div class="card-body">
+                                <!-- Similarity Score -->
+                                <div class="text-center mb-3">
+                                    <div class="similarity-score 
+                                        {% if result.similarity >= 0.8 %}high-similarity
+                                        {% elif result.similarity >= 0.5 %}medium-similarity
+                                        {% else %}low-similarity{% endif %}">
+                                        {{ "%.2f%%"|format(result.similarity * 100) }}
+                                    </div>
+                                    <small class="text-muted">相似度</small>
+                                    
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar 
+                                            {% if result.similarity >= 0.8 %}bg-danger
+                                            {% elif result.similarity >= 0.5 %}bg-warning
+                                            {% else %}bg-secondary{% endif %}"
+                                             style="width: {{ result.similarity * 100 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Hash -->
+                                <div class="mb-2">
+                                    <strong>Hash:</strong>
+                                    <div class="hash-text text-break">
+                                        {{ result.hash[:16] }}...
+                                    </div>
+                                </div>
+
+                                <!-- Details -->
+                                <div class="row text-center">
+                                    <div class="col-12">
+                                        <small class="text-muted d-block">置信度</small>
+                                        <strong>{{ "%.2f%%"|format(result.confidence * 100) }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <small class="text-muted">
+                                    <i class="fas fa-folder me-1"></i>
+                                    {{ result.path.split('/')[-1] }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Table View -->
+                <div id="tableView" class="d-none">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>家族</th>
+                                    <th>Hash</th>
+                                    <th>相似度</th>
+                                    <th>置信度</th>
+                                    <th>文件路径</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td><strong>#{{ loop.index }}</strong></td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if result.family == 'Patchwork' %}bg-danger
+                                            {% elif result.family == 'APT1' %}bg-warning
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ result.family }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <code class="hash-text">{{ result.hash[:16] }}...</code>
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" 
+                                                onclick="copyToClipboard('{{ result.hash }}')" 
+                                                title="复制完整Hash">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <span class="similarity-score 
+                                            {% if result.similarity >= 0.8 %}high-similarity
+                                            {% elif result.similarity >= 0.5 %}medium-similarity
+                                            {% else %}low-similarity{% endif %}">
+                                            {{ "%.2f%%"|format(result.similarity * 100) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ "%.2f%%"|format(result.confidence * 100) }}</td>
+                                    <td>
+                                        <small class="text-muted">{{ result.path.split('/')[-1] }}</small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6><i class="fas fa-download me-2"></i>导出结果</h6>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary" onclick="exportResults('json')">
+                                    <i class="fas fa-file-code me-1"></i>JSON
+                                </button>
+                                <button class="btn btn-outline-success" onclick="exportResults('csv')">
+                                    <i class="fas fa-file-csv me-1"></i>CSV
+                                </button>
+                                <button class="btn btn-outline-info" onclick="printResults()">
+                                    <i class="fas fa-print me-1"></i>打印
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <!-- No Results -->
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>未找到相似样本</h4>
+                <p class="text-muted">
+                    在数据库中没有找到与上传文件相似的样本。<br>
+                    您可以尝试调整搜索参数或上传其他文件。
+                </p>
+                <a href="{{ url_for('similarity.search_page') }}" class="btn btn-primary">
+                    <i class="fas fa-redo me-2"></i>重新搜索
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Hidden data for export -->
+    <script type="application/json" id="resultsData">
+        {
+            "search_filename": "{{ search_filename }}",
+            "search_duration": {{ search_duration }},
+            "total_samples": {{ total_samples }},
+            "total_families": {{ total_families }},
+            "top_k": {{ top_k }},
+            "results": {{ results | tojson }}
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // View toggle functionality
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const tableViewBtn = document.getElementById('tableViewBtn');
+        const gridView = document.getElementById('gridView');
+        const tableView = document.getElementById('tableView');
+
+        gridViewBtn.addEventListener('click', function() {
+            gridView.classList.remove('d-none');
+            tableView.classList.add('d-none');
+            gridViewBtn.classList.add('active');
+            tableViewBtn.classList.remove('active');
+        });
+
+        tableViewBtn.addEventListener('click', function() {
+            tableView.classList.remove('d-none');
+            gridView.classList.add('d-none');
+            tableViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show toast or alert
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed top-0 end-0 m-3 alert alert-success alert-dismissible fade show';
+                toast.innerHTML = 'Hash已复制到剪贴板! <button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            });
+        }
+
+        // Export functions
+        function exportResults(format) {
+            const data = JSON.parse(document.getElementById('resultsData').textContent);
+            
+            if (format === 'json') {
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                downloadFile(blob, `similarity_results_${data.search_filename}.json`);
+            } else if (format === 'csv') {
+                let csv = 'Rank,Family,Hash,Similarity,Confidence,Matches,Path\n';
+                data.results.forEach((result, index) => {
+                    csv += `${index + 1},"${result.family}","${result.hash}",${result.similarity},${result.confidence},${result.matches},"${result.path}"\n`;
+                });
+                const blob = new Blob([csv], {type: 'text/csv'});
+                downloadFile(blob, `similarity_results_${data.search_filename}.csv`);
+            }
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function printResults() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
