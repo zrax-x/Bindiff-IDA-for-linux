@@ -247,6 +247,14 @@ def compare_binexport_files(binexport1_path, binexport2_path):
             "matches": matches
         }
 
+        # 清理生成的临时BinDiff文件
+        try:
+            if os.path.exists(output_file_path):
+                os.remove(output_file_path)
+                print(f"已清理临时BinDiff文件: {output_file_path}")
+        except Exception as cleanup_error:
+            print(f"清理临时文件失败: {cleanup_error}")
+
         return result
         
     except Exception as e:

@@ -215,6 +215,17 @@ def api_search():
         # 执行搜索
         results = search_similar_samples_optimized(search_file_path, top_k)
         
+        # 清理out目录中的临时文件
+        try:
+            import shutil
+            out_dir = config.OUTPUT_FOLDER
+            if os.path.exists(out_dir):
+                shutil.rmtree(out_dir)
+                os.makedirs(out_dir, exist_ok=True)
+                logger.info(f"已清理out目录: {out_dir}")
+        except Exception as e:
+            logger.warning(f"清理out目录失败: {e}")
+        
         return jsonify({
             'success': True,
             'results': results,
@@ -245,6 +256,49 @@ def api_database_info():
         
     except Exception as e:
         logger.error(f"获取数据库信息时出错: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@similarity_bp.route('/api/cleanup', methods=['POST'])
+def api_cleanup():
+    """API接口：清理服务端临时文件"""
+    try:
+        logger.info("收到清理请求")
+        
+        # 清理out目录
+        import shutil
+        out_dir = config.OUTPUT_FOLDER
+        cleaned_files = 0
+        
+        if os.path.exists(out_dir):
+            # 统计要清理的文件数量
+            for root, dirs, files in os.walk(out_dir):
+                cleaned_files += len(files)
+            
+            # 清理目录
+            shutil.rmtree(out_dir)
+            os.makedirs(out_dir, exist_ok=True)
+            logger.info(f"已清理out目录: {out_dir}")
+        
+        # 清理其他可能的临时目录
+        temp_dirs = ['temp_binexports', 'temp_uploads']
+        for temp_dir in temp_dirs:
+            if os.path.exists(temp_dir):
+                temp_files = len(os.listdir(temp_dir))
+                if temp_files > 0:
+                    cleaned_files += temp_files
+                    logger.info(f"清理临时目录: {temp_dir} ({temp_files} 个文件)")
+                    # 实际清理目录中的文件
+                    shutil.rmtree(temp_dir)
+                    os.makedirs(temp_dir, exist_ok=True)
+        
+        return jsonify({
+            'success': True,
+            'message': f'成功清理 {cleaned_files} 个临时文件',
+            'cleaned_files': cleaned_files
+        })
+        
+    except Exception as e:
+        logger.error(f"清理临时文件时出错: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 def init_similarity_search(app, database_file):

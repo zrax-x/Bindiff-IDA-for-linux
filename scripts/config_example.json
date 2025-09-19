@@ -1,0 +1,44 @@
+{
+  "服务配置": {
+    "base_url": "http://localhost:5001",
+    "timeout": 300,
+    "说明": "BinDiff服务的基础URL和请求超时时间"
+  },
+  
+  "扫描配置": {
+    "recursive": true,
+    "max_files": 1000,
+    "use_magic": true,
+    "supported_extensions": [".exe", ".dll", ".sys", ".elf", ".so", ".bin"],
+    "说明": "文件扫描相关配置"
+  },
+  
+  "搜索配置": {
+    "top_k": 10,
+    "min_similarity": 0.7,
+    "target_families": ["Patchwork", "APT29", "Lazarus"],
+    "说明": "相似度搜索参数配置"
+  },
+  
+  "并发配置": {
+    "max_workers": 4,
+    "batch_size": 100,
+    "说明": "批量处理并发参数"
+  },
+  
+  "输出配置": {
+    "output_format": "json",
+    "include_metadata": true,
+    "compress_output": false,
+    "说明": "结果输出格式配置"
+  },
+  
+  "使用示例": {
+    "基本使用": "python bindiff_api_client.py /path/to/samples",
+    "指定输出": "python bindiff_api_client.py /path/to/samples -o my_results.json",
+    "递归扫描": "python bindiff_api_client.py /path/to/samples -r --max-files 500",
+    "过滤结果": "python bindiff_api_client.py /path/to/samples --min-similarity 0.8 --families Patchwork",
+    "调整并发": "python bindiff_api_client.py /path/to/samples --workers 8 --timeout 600",
+    "检查服务": "python bindiff_api_client.py /path/to/samples --check-only"
+  }
+}
