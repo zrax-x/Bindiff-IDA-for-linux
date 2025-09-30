@@ -41,7 +41,19 @@ class MalwareDatabaseLoader:
             logger.info(f"正在加载数据库文件: {self.database_file}")
             
             with open(self.database_file, 'r', encoding='utf-8') as f:
-                self.samples = json.load(f)
+                data = json.load(f)
+            
+            # 检查数据库格式
+            if isinstance(data, dict) and 'samples' in data:
+                # 新格式：有metadata和samples字段
+                self.samples = data['samples']
+                logger.info(f"检测到新数据库格式，metadata: {data.get('metadata', {})}")
+            elif isinstance(data, list):
+                # 旧格式：直接是样本数组
+                self.samples = data
+                logger.info("检测到旧数据库格式")
+            else:
+                raise ValueError("未知的数据库格式")
             
             # 构建family索引
             self.family_index.clear()
@@ -93,6 +105,27 @@ class MalwareDatabaseLoader:
             List[str]: 所有家族名称列表
         """
         return list(self.family_index.keys())
+    
+    def get_samples_by_families(self, families: List[str]) -> List[Dict[str, Any]]:
+        """
+        根据家族列表获取样本
+        
+        Args:
+            families: 家族名称列表
+            
+        Returns:
+            List[Dict]: 匹配的样本列表
+        """
+        if not families:
+            return self.samples
+        
+        filtered_samples = []
+        for family in families:
+            if family in self.family_index:
+                for index in self.family_index[family]:
+                    filtered_samples.append(self.samples[index])
+        
+        return filtered_samples
     
     
     def get_statistics(self) -> Dict[str, Any]:
@@ -191,13 +224,14 @@ def get_database_loader() -> MalwareDatabaseLoader:
     """
     return database_loader
 
-def search_similar_samples_optimized(target_file: str, top_k: int = 10) -> List[Dict[str, Any]]:
+def search_similar_samples_optimized(target_file: str, top_k: int = 10, families: List[str] = None) -> List[Dict[str, Any]]:
     """
     优化的相似度搜索：先转换目标文件为BinExport，再批量比较
     
     Args:
         target_file: 目标文件路径
         top_k: 返回前K个最相似的样本
+        families: 指定要搜索的家族列表，None表示搜索所有家族
         
     Returns:
         List[Dict]: 相似度搜索结果列表
@@ -209,6 +243,19 @@ def search_similar_samples_optimized(target_file: str, top_k: int = 10) -> List[
     
     logger.info(f"开始优化的相似度搜索: {target_file}")
     
+    # 根据家族过滤获取要比较的样本
+    if families:
+        samples_to_compare = database_loader.get_samples_by_families(families)
+        logger.info(f"✓ 家族过滤: {', '.join(families)}")
+        logger.info(f"✓ 过滤后样本数量: {len(samples_to_compare)}")
+    else:
+        samples_to_compare = database_loader.samples
+        logger.info(f"✓ 搜索所有家族，样本数量: {len(samples_to_compare)}")
+    
+    if not samples_to_compare:
+        logger.warning("没有匹配的样本可供比较")
+        return []
+    
     # 第一步：将目标文件转换为BinExport格式（只做一次）
     logger.info("第一步：转换目标文件为BinExport格式...")
     target_binexport = convert_pe_to_binexport(target_file)
@@ -219,18 +266,18 @@ def search_similar_samples_optimized(target_file: str, top_k: int = 10) -> List[
     
     logger.info(f"✓ 目标文件已转换为BinExport: {target_binexport}")
     
-    # 第二步：与数据库中的所有样本进行BinExport到BinExport的比较
+    # 第二步：与过滤后的样本进行BinExport到BinExport的比较
     logger.info("第二步：开始批量比较...")
     results = []
     
     try:
-        for i, sample in enumerate(database_loader.samples):
+        for i, sample in enumerate(samples_to_compare):
             sample_path = sample.get('path')
             if not sample_path or not os.path.exists(sample_path):
                 logger.warning(f"样本文件不存在: {sample_path}")
                 continue
             
-            logger.info(f"正在比较样本 {i+1}/{len(database_loader.samples)}: {sample.get('hash', 'Unknown')[:8]}...")
+            logger.info(f"正在比较样本 {i+1}/{len(samples_to_compare)}: {sample.get('hash', 'Unknown')[:8]}...")
             
             # 使用高效的BinExport比较
             comparison_result = compare_binexport_files(target_binexport, sample_path)

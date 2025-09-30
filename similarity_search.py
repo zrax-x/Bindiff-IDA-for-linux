@@ -208,12 +208,20 @@ def api_search():
         
         search_file_path = data.get('file_path')
         top_k = data.get('top_k', 10)
+        families = data.get('families')  # 获取家族过滤参数
         
         if not search_file_path or not os.path.exists(search_file_path):
             return jsonify({'success': False, 'error': '文件不存在'}), 400
         
-        # 执行搜索
-        results = search_similar_samples_optimized(search_file_path, top_k)
+        # 记录搜索参数
+        logger.info(f"API搜索请求: file={os.path.basename(search_file_path)}, top_k={top_k}")
+        if families:
+            logger.info(f"限制家族: {', '.join(families)}")
+        else:
+            logger.info("搜索所有家族")
+        
+        # 执行搜索，传递家族过滤参数
+        results = search_similar_samples_optimized(search_file_path, top_k, families)
         
         # 清理out目录中的临时文件
         try:

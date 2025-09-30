@@ -15,7 +15,7 @@ OUTPUT_FOLDER = 'out'  # 输出文件目录
 ALLOWED_EXTENSIONS = {'exe', 'dll', 'bin', 'elf', 'out'}  # 允许的文件类型
 
 # 数据库配置
-DATABASE_FILE = os.environ.get('MALWARE_DATABASE', '../gen_database/malware_simple.json')  # 恶意软件数据库文件路径
+DATABASE_FILE = os.environ.get('MALWARE_DATABASE', 'database/malware_simple.json')  # 恶意软件数据库文件路径
 
 # IDA Pro路径配置
 DEFAULT_IDA_PATHS = [

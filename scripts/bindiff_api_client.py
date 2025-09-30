@@ -129,13 +129,14 @@ class BinDiffAPIClient:
             logger.error(f"请求清理失败: {e}")
             return False
             
-    def search_similarity(self, file_path: str, top_k: int = 10) -> Optional[Dict]:
+    def search_similarity(self, file_path: str, top_k: int = 10, families: Optional[List[str]] = None) -> Optional[Dict]:
         """
         执行相似度搜索
         
         Args:
             file_path: 要搜索的文件路径
             top_k: 返回最相似的前K个结果
+            families: 指定要搜索的家族列表，None表示搜索所有家族
             
         Returns:
             搜索结果字典或None
@@ -147,8 +148,16 @@ class BinDiffAPIClient:
                 'top_k': top_k
             }
             
+            # 添加家族过滤参数
+            if families:
+                request_data['families'] = families
+            
             logger.info(f"🔍 正在搜索文件: {file_path}")
             logger.info(f"📊 请求TOP-{top_k}相似样本")
+            if families:
+                logger.info(f"🏷️ 限制家族: {', '.join(families)}")
+            else:
+                logger.info(f"🏷️ 搜索所有家族")
             
             start_time = time.time()
             
@@ -343,6 +352,7 @@ class BatchProcessor:
         self.max_workers = max_workers
         
     def process_files_batch(self, file_paths: List[str], top_k: int = 10,
+                           families: Optional[List[str]] = None,
                            progress_callback=None) -> List[Dict[str, Any]]:
         """
         批量处理文件
@@ -350,6 +360,7 @@ class BatchProcessor:
         Args:
             file_paths: 文件路径列表
             top_k: 每个文件返回的相似样本数量
+            families: 指定要搜索的家族列表
             progress_callback: 进度回调函数
             
         Returns:
@@ -368,7 +379,7 @@ class BatchProcessor:
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
             future_to_file = {
-                executor.submit(self._process_single_file, file_path, top_k): file_path
+                executor.submit(self._process_single_file, file_path, top_k, families): file_path
                 for file_path in file_paths
             }
             
@@ -420,10 +431,10 @@ class BatchProcessor:
         
         return results
         
-    def _process_single_file(self, file_path: str, top_k: int) -> Optional[Dict]:
+    def _process_single_file(self, file_path: str, top_k: int, families: Optional[List[str]] = None) -> Optional[Dict]:
         """处理单个文件"""
         try:
-            return self.api_client.search_similarity(file_path, top_k)
+            return self.api_client.search_similarity(file_path, top_k, families)
         except Exception as e:
             logger.error(f"处理文件失败 {file_path}: {e}")
             return None
@@ -665,6 +676,7 @@ def main():
         results = processor.process_files_batch(
             executable_files,
             args.top_k,
+            args.families,
             progress_callback
         )
         
